@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Penuel.Domain", "Penuel.Domain\Penuel.Domain.csproj", "{C25986A3-65BF-421C-88F4-B9D758929FF4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Penuel.Application", "Penuel.Application\Penuel.Application.csproj", "{2D2341A6-3B85-4520-8108-873A8351BAFC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Penuel.Infrastructure", "Penuel.Infrastructure\Penuel.Infrastructure.csproj", "{D602F2D8-3B65-47A2-A171-86A94B316D85}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Penuel.WebApi", "Penuel.WebApi\Penuel.WebApi.csproj", "{227A7551-8A09-437A-8C60-FD19ACFE6ACB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Penuel.Application.Tests", "Penuel.Application.Tests\Penuel.Application.Tests.csproj", "{1207E201-9D89-4CA4-9422-CD839D5A72F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Penuel.Bootstrap", "Penuel.Bootstrap\Penuel.Bootstrap.csproj", "{430E8AB1-F45E-4CD0-A03D-9580AD82BEC5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C25986A3-65BF-421C-88F4-B9D758929FF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C25986A3-65BF-421C-88F4-B9D758929FF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C25986A3-65BF-421C-88F4-B9D758929FF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C25986A3-65BF-421C-88F4-B9D758929FF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D2341A6-3B85-4520-8108-873A8351BAFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D2341A6-3B85-4520-8108-873A8351BAFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D2341A6-3B85-4520-8108-873A8351BAFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D2341A6-3B85-4520-8108-873A8351BAFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D602F2D8-3B65-47A2-A171-86A94B316D85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D602F2D8-3B65-47A2-A171-86A94B316D85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D602F2D8-3B65-47A2-A171-86A94B316D85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D602F2D8-3B65-47A2-A171-86A94B316D85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{227A7551-8A09-437A-8C60-FD19ACFE6ACB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{227A7551-8A09-437A-8C60-FD19ACFE6ACB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{227A7551-8A09-437A-8C60-FD19ACFE6ACB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{227A7551-8A09-437A-8C60-FD19ACFE6ACB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1207E201-9D89-4CA4-9422-CD839D5A72F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1207E201-9D89-4CA4-9422-CD839D5A72F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1207E201-9D89-4CA4-9422-CD839D5A72F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1207E201-9D89-4CA4-9422-CD839D5A72F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{430E8AB1-F45E-4CD0-A03D-9580AD82BEC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{430E8AB1-F45E-4CD0-A03D-9580AD82BEC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{430E8AB1-F45E-4CD0-A03D-9580AD82BEC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{430E8AB1-F45E-4CD0-A03D-9580AD82BEC5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

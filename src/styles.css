@@ -1,0 +1,590 @@
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PENUEL — sistema de diseño
+
+   Minimalismo que no es simpleza: presencia por espacio, escala y contraste,
+   no por decoración. Tres reglas gobiernan todo lo de aquí:
+
+   1. El lienzo es gris claro y las tarjetas son BLANCAS: se separan por tono
+      antes que por línea. Sobre eso llevan un filo de vidrio —`.pane`— que
+      es casi invisible y solo les da canto. El tablero es la excepción y va
+      plano, porque ahí las tarjetas ya se separan por tamaño y por dato.
+   2. El negro es un ESTADO, no una superficie. Lo lleva lo activo, lo
+      seleccionado y la acción principal. Nada más.
+   3. El color solo existe dentro de los datos. La interfaz alrededor es
+      negra, blanca y gris.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@theme {
+  /* ── Lienzo ───────────────────────────────────────────────────────────── */
+  --color-bone:         #F1F2F5;   /* fondo de la aplicación           */
+  --color-bone-deep:    #E8EAEF;   /* rieles hundidos, pistas de control */
+  --color-bone-line:    #DDE0E6;
+  --color-surface:      #FFFFFF;   /* tarjetas                         */
+  --color-surface-warm: #F8F9FB;   /* tarjetas secundarias, filas      */
+
+  /* ── Tinta ─────────────────────────────────────────────────────────────
+     Casi negro con una gota de azul. Un #000 puro sobre gris claro vibra;
+     este no.                                                              */
+  --color-ink:          #0E1013;
+  --color-ink-panel:    #14171C;   /* la única superficie oscura: avisos */
+  --color-ink-raised:   #222831;
+  --color-ink-line:     #2B313A;
+  --color-ink-soft:     #6C737F;   /* texto secundario                 */
+  --color-ink-faint:    #9BA2AE;   /* etiquetas, terciario             */
+  --color-line:         #E7E9EE;   /* divisiones y campos              */
+  --color-line-strong:  #D6DAE1;
+
+  /* ── Datos ─────────────────────────────────────────────────────────────
+     Cuatro categorías que se distinguen entre sí y en escala de grises.
+     `clay` es además el acento de identidad: la marca y lo que entra.     */
+  --color-clay:         #F97316;   /* naranja                          */
+  --color-clay-deep:    #DC5F0A;
+  --color-clay-bright:  #FF9A4D;
+  --color-clay-soft:    #FDEEE1;
+  --color-clay-line:    #F9DCC4;
+
+  --color-lake:         #2F6FED;   /* azul                             */
+  --color-lake-deep:    #1D54C4;
+  --color-lake-bright:  #6FA1FF;
+  --color-lake-soft:    #E7F0FE;
+  --color-lake-line:    #C9DDFB;
+
+  --color-forest:       #12A150;   /* verde — presencia, lo que sube   */
+  --color-forest-deep:  #0B7C3D;
+  --color-forest-bright:#3ED07F;
+  --color-forest-soft:  #E4F6EC;
+  --color-forest-line:  #C1E9D2;
+
+  --color-ochre:        #7A5AF8;   /* violeta — dinero identificado    */
+  --color-ochre-deep:   #5B3BD4;
+  --color-ochre-bright: #A78BFA;
+  --color-ochre-soft:   #EFEBFE;
+  --color-ochre-line:   #DCD3FC;
+
+  --color-danger:       #E0342C;
+  --color-danger-soft:  #FDECEB;
+  --color-danger-line:  #F8CFCC;
+
+  /* Sexto tinte de los avatares. No es un color de datos —nunca aparece en una
+     gráfica—, pero necesita token igual: escrito a mano en el componente no se
+     invertía, y en modo oscuro dejaba un disco casi blanco entre cinco oscuros. */
+  --color-rose-soft:    #FCE7F3;
+  --color-rose-deep:    #9D2A6E;
+
+  /* ── Primeros planos ────────────────────────────────────────────────────
+     Estos cuatro tokens existen porque en modo oscuro NO todo se invierte a
+     la vez. `bg-ink` es un relleno que se aclara (la pastilla primaria pasa a
+     ser clara con texto oscuro), mientras que `panel-ink` sigue siendo una
+     losa oscura. Sin nombrar el primer plano por separado, un solo
+     `text-white` tendría que servir para ambos casos, y en uno de los dos
+     quedaría ilegible.                                                     */
+  --color-on-ink:     #FFFFFF;   /* sobre el relleno `bg-ink`           */
+  --color-on-accent:  #FFFFFF;   /* sobre naranja, verde, azul, rojo    */
+  --color-on-panel:   #FFFFFF;   /* sobre `panel-ink` (avisos)          */
+  --color-knob:       #FFFFFF;   /* perilla del interruptor             */
+  --color-scrim:      #0E1013;   /* velo detrás de los paneles          */
+
+  /* ── Vidrio ─────────────────────────────────────────────────────────────
+     Las tarjetas ya no son planas. Tres capas muy tenues las convierten en
+     una lámina: un filo de 1px, un brillo interior en el borde superior y una
+     caída de sombra hacia abajo. Sin `backdrop-filter`: desenfocar decenas de
+     tarjetas a la vez cuesta cada fotograma del desplazamiento, y en el
+     teléfono de alguien de 70 años eso se nota antes que el efecto.          */
+  --color-pane-line:  rgb(16 24 40 / 0.07);    /* el filo                   */
+  --color-pane-sheen: rgb(255 255 255 / 0.9);  /* brillo del borde superior */
+  --color-pane-tint:  rgb(16 24 40 / 0.018);   /* caída hacia el pie        */
+
+  /* ── Tipografía ────────────────────────────────────────────────────────
+     Una sola familia geométrica en todo. La jerarquía la hace el TAMAÑO y
+     el peso, nunca un cambio de familia: dos tipografías en un tablero se
+     leen como dos productos pegados.                                      */
+  --font-sans:    "DM Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+
+  /* La escala arranca en 16.5px. Un poco por encima del estándar: se nota a
+     los 70 años y no le cuesta nada a nadie más.                          */
+  --text-2xs:   0.8125rem;  /* 13 — solo etiquetas en versalitas */
+  --text-xs:    0.875rem;   /* 14 */
+  --text-sm:    0.9375rem;  /* 15 */
+  --text-base:  1.03125rem; /* 16.5 — cuerpo                    */
+  --text-lg:    1.125rem;   /* 18 */
+  --text-xl:    1.3125rem;  /* 21 */
+  --text-2xl:   1.625rem;   /* 26 */
+  --text-3xl:   2rem;       /* 32 */
+  --text-4xl:   2.75rem;    /* 44 */
+  --text-5xl:   3.5rem;     /* 56 */
+  --text-6xl:   4.5rem;     /* 72 — la cifra héroe              */
+
+  /* ── Forma ─────────────────────────────────────────────────────────────
+     Píldora completa en lo pulsable; radios muy generosos en lo que
+     contiene. Es lo que hace que una retícula densa se sienta amable.     */
+  --radius-control: 999px;
+  --radius-field:   1.375rem;   /* 22px — campos de texto largo */
+  --radius-card:    2rem;       /* 32px */
+  --radius-panel:   2.25rem;    /* 36px */
+  --radius-hero:    2.5rem;     /* 40px */
+
+  /* ── Objetivos táctiles ────────────────────────────────────────────────
+     El mínimo de accesibilidad son 44px. Aquí no se usa el mínimo.        */
+  --spacing-13:       3.25rem;  /* 52px */
+  --spacing-touch:    3.5rem;   /* 56px — controles secundarios */
+  --spacing-touch-lg: 4rem;     /* 64px — acciones primarias    */
+  --spacing-dock:     4.75rem;  /* 76px — alto del dock móvil   */
+  --spacing-rail:     17rem;    /* 272px — barra lateral        */
+
+  /* ── Elevación ─────────────────────────────────────────────────────────
+     Casi invisible a propósito. Lo que separa una tarjeta del fondo es que
+     es blanca sobre gris, no que flote.                                   */
+  --shadow-card:   0 1px 2px rgb(16 24 40 / 0.03), 0 6px 20px rgb(16 24 40 / 0.04);
+  --shadow-raised: 0 2px 4px rgb(16 24 40 / 0.04), 0 12px 32px rgb(16 24 40 / 0.08);
+  --shadow-hero:   0 4px 10px rgb(16 24 40 / 0.06), 0 24px 56px rgb(16 24 40 / 0.12);
+  --shadow-dock:   0 4px 12px rgb(16 24 40 / 0.06), 0 16px 40px rgb(16 24 40 / 0.12);
+  --shadow-pill:   0 1px 2px rgb(16 24 40 / 0.05);
+
+  /* ── Movimiento ────────────────────────────────────────────────────────
+     Una sola curva para todo. La consistencia del movimiento se lee tanto
+     como la del color.                                                    */
+  --ease-out-back: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MODO OSCURO
+
+   No es la paleta clara invertida. Es la misma paleta releída con dos reglas
+   que en claro no hacen falta:
+
+   1. NUNCA negro puro. El lienzo es un grafito azulado profundo (#151A22) y
+      queda margen POR DEBAJO —#0C1014— para los huecos hundidos, que en claro
+      se conseguían yendo hacia el gris. Sin ese margen, `bg-bone-deep` (36
+      usos, casi todos DENTRO de una tarjeta) desaparecería contra el fondo.
+   2. Contraste medido, no máximo. El texto principal está a 11:1 sobre el
+      lienzo, no a los 21:1 del blanco puro. En una pantalla oscura el ojo
+      tiene la pupila abierta: el mismo número que en claro se lee cómodo,
+      aquí deslumbra y deja estela al desplazar.
+
+   La escalera de elevación se invierte, como debe: en claro lo elevado es más
+   blanco que el lienzo; aquí lo elevado es más CLARO que el lienzo, y lo
+   hundido más oscuro. Se mide contra el peldaño vecino, no contra el fondo.
+
+   Los acentos se aclaran y se desaturan un punto. Un #F97316 de fuerza plena
+   sobre grafito vibra en el borde; aclarado a #EF9155 dice lo mismo sin gritar.
+
+   ── AJUSTE OPCIONAL ──────────────────────────────────────────────────────
+   Esta paleta está medida, no cerrada. Se puede pulir sin rehacer nada, y los
+   tres ejes que de verdad mueven la sensación son:
+
+     · Profundidad del lienzo — bajar `--color-bone` hacia #10141B da un negro
+       más hondo y cinematográfico. Si se toca, hay que bajar `--color-bone-deep`
+       con él o el hueco hundido se queda sin sitio por debajo.
+     · Nivel de contraste del texto — `--color-ink` está a 11:1 sobre el lienzo.
+       Subirlo hacia #D6DAE1 lo lleva a ~13:1 (más nítido, algo más de brillo);
+       bajarlo hacia #BCC1C9 lo deja en ~9:1 (más suave para leer de noche).
+     · Fuerza de los acentos — están aclarados un punto. Acercarlos al tono claro
+       los hace más vivos a costa de vibrar sobre el grafito.
+
+   La regla que NO conviene romper: nada de negro puro, y el techo de contraste
+   por debajo de ~13:1. El resto es gusto.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* ── Lienzo ─────────────────────────────  contra el peldaño vecino ───── */
+  --color-bone:         #151A22;   /* fondo de la aplicación               */
+  --color-bone-deep:    #0C1014;   /* hundido — 1.22 bajo la tarjeta       */
+  --color-bone-line:    #2C333E;
+  --color-surface:      #1E242E;   /* tarjetas — 1.12 sobre el fondo       */
+  --color-surface-warm: #262D38;   /* filas    — 1.12 sobre la tarjeta     */
+
+  /* ── Tinta ──────────────────────────────  medido sobre la tarjeta ───── */
+  --color-ink:          #C9CDD4;   /* principal   9.8:1                    */
+  --color-ink-panel:    #0B0E13;   /* losa de avisos                       */
+  --color-ink-raised:   #D5D9E0;   /* el hover de la pastilla ACLARA       */
+  --color-ink-line:     #2F3742;
+  --color-ink-soft:     #8D96A3;   /* secundario  5.2:1                    */
+  --color-ink-faint:    #626B79;   /* terciario   2.9:1                    */
+  --color-line:         #2A313B;
+  --color-line-strong:  #38404C;
+
+  /* ── Primeros planos ────────────────────────────────────────────────────
+     Aquí se separan los caminos: sobre la pastilla clara y sobre los rellenos
+     de color va tinta oscura; sobre la losa de avisos sigue yendo texto claro. */
+  --color-on-ink:       #12161D;   /* 11.4:1 sobre la pastilla             */
+  --color-on-accent:    #12161D;   /* 6.2–7.6:1 sobre cada acento          */
+  --color-on-panel:     #C9CDD4;   /* 12.1:1 sobre la losa                 */
+  --color-knob:         #E4E8EE;
+  --color-scrim:        #04060A;   /* más profundo: vela un fondo ya oscuro */
+
+  /* ── Vidrio ─────────────────────────────────────────────────────────────
+     Aquí el efecto se lee mucho mejor que en claro: sobre grafito, un brillo
+     blanco al 5% en el borde superior SÍ se ve, y es exactamente lo que hace
+     que una tarjeta parezca una lámina con canto y no un rectángulo pintado. */
+  --color-pane-line:    rgb(255 255 255 / 0.07);
+  --color-pane-sheen:   rgb(255 255 255 / 0.15);
+  --color-pane-tint:    rgb(0 0 0 / 0.13);
+
+  /* ── Datos ──────────────────────────────────────────────────────────────
+     Los tintes `-soft` no se separan de la tarjeta por brillo sino por TONO:
+     su contraste WCAG contra ella es ~1.0 y aun así se distinguen, porque el
+     ojo lee ahí croma, no luminancia. Verificados por ΔE en CIELAB (13–18),
+     la misma banda perceptual que tienen en la paleta clara.               */
+  --color-clay:         #EF9155;
+  --color-clay-deep:    #FFA872;
+  --color-clay-bright:  #FFBE91;
+  --color-clay-soft:    #2A1E15;
+  --color-clay-line:    #4A3020;
+
+  --color-lake:         #7BA3F5;
+  --color-lake-deep:    #96BAFF;
+  --color-lake-bright:  #AECAFF;
+  --color-lake-soft:    #152340;
+  --color-lake-line:    #29395A;
+
+  --color-forest:       #4CBB84;
+  --color-forest-deep:  #68CE9B;
+  --color-forest-bright:#89DEB2;
+  --color-forest-soft:  #132419;
+  --color-forest-line:  #224531;
+
+  --color-ochre:        #A38DF3;
+  --color-ochre-deep:   #B8A4FA;
+  --color-ochre-bright: #C8B9FC;
+  --color-ochre-soft:   #211C36;
+  --color-ochre-line:   #362E58;
+
+  --color-danger:       #EC7169;
+  --color-danger-soft:  #2B1715;
+  --color-danger-line:  #4E2A27;
+
+  --color-rose-soft:    #2C1720;   /* disco 1.08 sobre la tarjeta, como el resto */
+  --color-rose-deep:    #EE9CC4;   /* 8.15:1 sobre su tinte                      */
+
+  /* ── Elevación ──────────────────────────────────────────────────────────
+     En claro la sombra casi no existe porque el tono ya separa. En oscuro el
+     tono separa MENOS, así que la sombra tiene que trabajar: negro real y
+     opacidad alta, pero solo bajo lo que de verdad flota.                  */
+  --shadow-card:   0 1px 2px rgb(0 0 0 / 0.28), 0 6px 20px rgb(0 0 0 / 0.30);
+  --shadow-raised: 0 2px 4px rgb(0 0 0 / 0.32), 0 12px 32px rgb(0 0 0 / 0.42);
+  --shadow-hero:   0 4px 10px rgb(0 0 0 / 0.38), 0 24px 56px rgb(0 0 0 / 0.55);
+  --shadow-dock:   0 4px 12px rgb(0 0 0 / 0.34), 0 16px 40px rgb(0 0 0 / 0.50);
+  --shadow-pill:   0 1px 2px rgb(0 0 0 / 0.35);
+}
+
+@layer base {
+  html {
+    color-scheme: light;   /* :root[data-theme="dark"] lo cambia a dark */
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: var(--color-bone);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    font-optical-sizing: auto;
+    line-height: 1.55;
+    letter-spacing: -0.006em;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overscroll-behavior-y: none;
+  }
+
+  /* Foco siempre visible y grueso: quien navega con teclado —o con el dedo
+     tembloroso— necesita ver dónde está parado. */
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 3px;
+    border-radius: 999px;
+  }
+
+  /* Los números tabulares evitan que las cifras "bailen" al escribir. */
+  input[type="number"],
+  input[inputmode="decimal"],
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /*
+   * Los campos de fecha y hora en iOS traen un ancho INTRÍNSECO calculado a
+   * partir del formato local, y ese ancho gana sobre un `width: 100%`: el campo
+   * se sale del panel y arrastra consigo un scroll horizontal que hace incómodo
+   * rellenar el resto del formulario.
+   *
+   * `min-width: 0` es lo que de verdad lo suelta —sin eso el mínimo automático
+   * de un elemento reemplazado sigue mandando— y quitarle la apariencia nativa
+   * evita que el widget interno vuelva a imponer su tamaño. El valor se alinea a
+   * la izquierda porque WebKit lo centra dentro de ese ancho fantasma.
+   */
+  input[type="date"],
+  input[type="time"],
+  input[type="datetime-local"],
+  input[type="month"] {
+    -webkit-appearance: none;
+    appearance: none;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  input[type="date"]::-webkit-date-and-time-value,
+  input[type="time"]::-webkit-date-and-time-value,
+  input[type="datetime-local"]::-webkit-date-and-time-value {
+    text-align: left;
+    margin: 0;
+  }
+
+  /* El calendarito nativo no se estira ni se encoge; que no empuje al resto. */
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    flex-shrink: 0;
+  }
+
+  /* Las flechitas del input numérico son diminutas e imposibles de acertar
+     con el dedo. Se quitan; ya damos botones grandes en su lugar. */
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type="number"] { -moz-appearance: textfield; }
+
+  ::selection { background: var(--color-ink); color: var(--color-on-ink); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+/*
+ * Lámina de vidrio. Es lo que separa una tarjeta de un rectángulo pintado, y
+ * son tres capas, todas por debajo del umbral de "se ve":
+ *
+ *   1. un filo de 1px en los cuatro lados,
+ *   2. ese mismo filo ACLARADO arriba — la luz que engancha un canto,
+ *   3. una caída de sombra hacia el pie.
+ *
+ * El brillo va en `border-top-color` y no en un `box-shadow: inset`, que sería
+ * lo obvio: la sombra la usan las tarjetas para levantarse al pasar el ratón
+ * (`hover:shadow-raised`), y una regla que fije `box-shadow` aquí les mataría
+ * ese gesto. Tocando solo el borde, las dos cosas conviven.
+ *
+ * Nada de `backdrop-filter`. Desenfocar el fondo de veinte tarjetas cuesta
+ * cada fotograma del desplazamiento; el canto se consigue igual y gratis.
+ *
+ * Vive en `components` y no en `utilities` a propósito: así cualquier tarjeta
+ * que ya gestione su propio borde —`hover:border-clay-line`, el verde del
+ * presente— gana sobre el filo base sin tener que pelearse por especificidad.
+ */
+.pane {
+  border: 1px solid var(--color-pane-line);
+  border-top-color: var(--color-pane-sheen);
+  background-image: linear-gradient(180deg, transparent 55%, var(--color-pane-tint) 100%);
+}
+
+/*
+ * El tablero va plano a propósito. Ahí las tarjetas son grandes y desiguales
+ * —una cifra héroe, un bento, cuatro métricas— y ya se separan por tamaño;
+ * añadirles filo las convierte en una rejilla. Se apaga con un solo atributo
+ * en la raíz de la pantalla en vez de una prop repartida por veinte llamadas.
+ */
+[data-panes="flat"] .pane {
+  border-color: transparent;
+  background-image: none;
+}
+}
+
+@layer utilities {
+  /*
+   * `display` y `numeral` NO cambian de familia — solo aprietan el tracking.
+   * A 44px, la misma tipografía con -3% de espaciado se lee como titular; sin
+   * apretarla se lee como cuerpo agrandado, que es el error que hace que un
+   * tablero parezca una plantilla.
+   */
+  .font-display { letter-spacing: -0.028em; }
+  .font-numeral {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.035em;
+  }
+
+  /* Etiqueta pequeña sobre el titular. Es el recurso que ordena el tablero
+     sin añadir ni una línea ni un borde más. */
+  .eyebrow {
+    font-size: var(--text-sm);
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+
+  /* La única superficie oscura que queda: los avisos flotantes.
+     En claro se recorta sola contra el lienzo. En oscuro el lienzo YA es
+     oscuro, así que la losa necesita un filo propio o se funde con el fondo. */
+  .panel-ink {
+    background: var(--color-ink-panel);
+    box-shadow: var(--shadow-hero);
+  }
+  :root[data-theme="dark"] .panel-ink {
+    border: 1px solid var(--color-ink-line);
+  }
+
+  /* Vidrio esmerilado de las barras fijas. */
+  .frost { background: color-mix(in srgb, var(--color-bone) 82%, transparent); backdrop-filter: blur(16px) saturate(1.3); }
+
+  /* El degradado del acceso: naranja y azul rozando los bordes de un lienzo
+     gris. Es la firma cromática de la aplicación, dicha una sola vez. */
+  .aurora {
+    background:
+      radial-gradient(75% 62% at 2% -4%, rgb(249 115 22 / 0.42) 0%, transparent 60%),
+      radial-gradient(78% 64% at 100% 104%, rgb(47 111 237 / 0.34) 0%, transparent 60%),
+      linear-gradient(160deg, #F7F8FA 0%, #EDEFF3 100%);
+  }
+  /* La misma firma, dicha en voz baja: los halos bajan a la mitad de fuerza
+     porque sobre grafito un naranja al 42% deja de ser un halo y es una
+     mancha; y el lienzo va de un grafito a otro, nunca a negro. */
+  :root[data-theme="dark"] .aurora {
+    background:
+      radial-gradient(75% 62% at 2% -4%, rgb(239 145 85 / 0.20) 0%, transparent 62%),
+      radial-gradient(78% 64% at 100% 104%, rgb(123 163 245 / 0.17) 0%, transparent 62%),
+      linear-gradient(160deg, #1A202A 0%, #11151C 100%);
+  }
+
+  /*
+   * Marco de los paneles flotantes.
+   *
+   * `top: 0` + `fixed` es el borde superior del viewport de MAQUETA, y `dvh` el
+   * alto del DINÁMICO — el que encoge cuando aparece la barra de Safari. En iOS
+   * moderno la barra vive abajo, así que esa pareja describe exactamente la zona
+   * visible: empieza donde empieza y termina donde termina.
+   *
+   * El error anterior fue `inset: 0` con un panel en `dvh`. `inset: 0` estira el
+   * contenedor hasta el alto de MAQUETA, que en iOS es el alto SIN barras, así
+   * que `mt-auto` dejaba el borde inferior del panel unos 90px por debajo de lo
+   * visible, dentro de la máscara redondeada con la que Safari recorta el
+   * contenido junto a la barra. De ahí salía el arco.
+   *
+   * El segundo error fue arreglarlo midiendo `visualViewport.offsetTop`: al
+   * final de la página ese valor es POSITIVO —la ventana visual queda desplazada
+   * dentro de la de maqueta— y el panel se abría a media pantalla. La medición
+   * sobra: estas dos líneas de CSS dicen lo mismo y no se quedan obsoletas.
+   */
+  .sheet-frame {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100dvh;
+  }
+
+  /*
+   * Carrusel que llega al borde de la pantalla.
+   *
+   * Un `overflow-x-auto` dentro del margen de página se corta EN el margen, y el
+   * último chip aparece cercenado a media palabra. Esto tira del contenedor hacia
+   * fuera por el ancho del margen y se lo devuelve como relleno interior, así que
+   * los chips arrancan donde deben pero pueden desplazarse hasta el borde real.
+   *
+   * El desvanecido es un `mask-image`, no un degradado encima. La diferencia
+   * importa: una capa pintada tendría que adivinar el color del fondo y se vería
+   * como una mancha en cuanto el fondo cambiara —modo oscuro, una tarjeta, un
+   * panel—. La máscara vuelve el chip transparente, así que el color que aparece
+   * es SIEMPRE el del fondo real, sea cual sea.
+   *
+   * La zona de desvanecido mide exactamente lo que el margen. Eso es lo que hace
+   * que no se note: sin desplazar, el primer chip empieza justo donde termina el
+   * desvanecido izquierdo, y del todo desplazado el último termina justo donde
+   * empieza el derecho. Solo se ve difuminarse lo que de verdad se está yendo.
+   */
+  .rail {
+    --rail-bleed: 1rem;                      /* el px-4 del armazón en teléfono */
+    margin-inline: calc(var(--rail-bleed) * -1);
+    padding-inline: var(--rail-bleed);
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 var(--rail-bleed),
+      #000 calc(100% - var(--rail-bleed)),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 var(--rail-bleed),
+      #000 calc(100% - var(--rail-bleed)),
+      transparent 100%
+    );
+  }
+  .rail::-webkit-scrollbar { display: none; }
+
+  @media (min-width: 640px) {
+    .rail { --rail-bleed: 1.75rem; }         /* el sm:px-7 */
+  }
+
+  /* Dentro de un panel el margen es otro; se ajusta con esta variante. */
+  .rail-sheet { --rail-bleed: 1.25rem; }
+  @media (min-width: 640px) {
+    .rail-sheet { --rail-bleed: 1.75rem; }
+  }
+
+  /*
+   * En escritorio se apaga. Ahí el encabezado deja de apilarse y el control se va
+   * a la derecha, donde sobra sitio: no hay nada que se corte, y el margen
+   * negativo lo empujaría fuera de la página.
+   */
+  @media (min-width: 1024px) {
+    .rail,
+    .rail-sheet {
+      margin-inline: 0;
+      padding-inline: 0;
+      -webkit-mask-image: none;
+      mask-image: none;
+    }
+  }
+
+  /* Barras de scroll discretas dentro de paneles. */
+  .scroll-slim { scrollbar-width: thin; scrollbar-color: var(--color-line-strong) transparent; }
+  .scroll-slim::-webkit-scrollbar { width: 6px; height: 6px; }
+  .scroll-slim::-webkit-scrollbar-thumb { background: var(--color-line-strong); border-radius: 999px; }
+
+  .no-scrollbar { scrollbar-width: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+
+  /* ── Animaciones ─────────────────────────────────────────────────────── */
+  .animate-rise { animation: rise 0.45s var(--ease-out-back) both; }
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+  .animate-pop { animation: pop 0.4s var(--ease-out-back) both; }
+  @keyframes pop { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: none; } }
+
+  .animate-slide-up { animation: slide-up 0.34s var(--ease-out-back) both; }
+  @keyframes slide-up { from { transform: translateY(100%); } to { transform: none; } }
+
+  .animate-fade { animation: fade 0.25s ease-out both; }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+  /* El trazo de las gráficas se dibuja al entrar: el dato "llega", no estaba. */
+  .animate-draw { animation: draw 1.1s var(--ease-in-out-soft) both; }
+  @keyframes draw { from { stroke-dashoffset: var(--draw-length, 1000); } to { stroke-dashoffset: 0; } }
+
+  .animate-sweep { animation: sweep 0.9s var(--ease-out-back) both; }
+  @keyframes sweep { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+  .animate-grow { animation: grow 0.7s var(--ease-out-back) both; transform-origin: bottom; }
+  @keyframes grow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+
+  /* Escalonado declarativo: `stagger` en el contenedor y cada hijo entra
+     40ms después del anterior. Evita repartir retardos a mano. */
+  .stagger > * { animation: rise 0.45s var(--ease-out-back) both; }
+  .stagger > *:nth-child(1) { animation-delay: 0.02s }
+  .stagger > *:nth-child(2) { animation-delay: 0.06s }
+  .stagger > *:nth-child(3) { animation-delay: 0.10s }
+  .stagger > *:nth-child(4) { animation-delay: 0.14s }
+  .stagger > *:nth-child(5) { animation-delay: 0.18s }
+  .stagger > *:nth-child(6) { animation-delay: 0.22s }
+  .stagger > *:nth-child(7) { animation-delay: 0.26s }
+  .stagger > *:nth-child(8) { animation-delay: 0.30s }
+  .stagger > *:nth-child(n+9) { animation-delay: 0.34s }
+}

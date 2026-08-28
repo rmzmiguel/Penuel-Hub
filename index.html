@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="es-MX">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content"
+    />
+    <meta name="theme-color" content="#F1F2F5" />
+    <meta name="description" content="Penuel — administración de la Comunidad Cristiana Penuel" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <title>Penuel</title>
+    <!--
+      Resuelve el tema ANTES de que el navegador pinte el primer fotograma.
+      Si esto viviera en React, el usuario en modo oscuro vería un destello
+      blanco en cada carga: el CSS ya pintó cuando el JS de la aplicación
+      arranca. Duplica a propósito la clave de src/theme/ThemeProvider.tsx.
+    -->
+    <script>
+      (function () {
+        try {
+          var p = localStorage.getItem('penuel.tema')
+          var oscuro =
+            p === 'oscuro' ||
+            ((p === 'sistema' || !p) &&
+              window.matchMedia('(prefers-color-scheme: dark)').matches)
+          document.documentElement.dataset.theme = oscuro ? 'dark' : 'light'
+          document
+            .querySelector('meta[name="theme-color"]')
+            .setAttribute('content', oscuro ? '#151A22' : '#F1F2F5')
+        } catch (e) {
+          document.documentElement.dataset.theme = 'light'
+        }
+      })()
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300..700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
