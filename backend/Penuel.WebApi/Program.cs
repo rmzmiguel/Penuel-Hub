@@ -167,8 +167,13 @@ app.UseAuthorization();
  *
  * Si la base no responde, devuelve 503 y el monitor avisa. Eso es deseable: un backend
  * "vivo" que no alcanza su base no está sano, y quien mire el panel merece enterarse.
+ *
+ * Atiende GET y HEAD. No es un detalle: los monitores de disponibilidad —UptimeRobot
+ * entre ellos— usan HEAD por omisión, porque solo necesitan el código de estado y no el
+ * cuerpo. Con `MapGet` a secas, un HEAD recibía 405 y el monitor marcaba el servicio
+ * como caído estando perfectamente vivo.
  */
-app.MapGet("/health", async (ApplicationDbContext db, CancellationToken ct) =>
+app.MapMethods("/health", ["GET", "HEAD"], async (ApplicationDbContext db, CancellationToken ct) =>
     await db.Database.CanConnectAsync(ct)
         ? Results.Ok(new { status = "ok" })
         : Results.Json(new { status = "sin base de datos" }, statusCode: StatusCodes.Status503ServiceUnavailable))
