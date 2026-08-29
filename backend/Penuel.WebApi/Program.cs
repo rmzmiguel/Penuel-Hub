@@ -1,3 +1,4 @@
+using Penuel.Infrastructure.Persistence;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
@@ -150,6 +151,29 @@ if (!string.IsNullOrWhiteSpace(frontendUrl))
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+/*
+ * Latido para el monitor externo (UptimeRobot).
+ *
+ * Toca la BASE a propósito, no solo el proceso. El plan gratuito de Render duerme el
+ * servicio a los 15 minutos y el de Supabase pausa el proyecto por inactividad de la
+ * BASE DE DATOS: un endpoint que solo respondiera "vivo" despertaría a uno y dejaría
+ * que el otro se apagara igual. Con un viaje de ida y vuelta, un solo ping sostiene
+ * los dos.
+ *
+ * `CanConnectAsync` abre y cierra una conexión, que es lo más barato que cuenta como
+ * actividad. No lee ninguna tabla ni revela nada: la respuesta es la misma para
+ * cualquiera y por eso el endpoint es anónimo.
+ *
+ * Si la base no responde, devuelve 503 y el monitor avisa. Eso es deseable: un backend
+ * "vivo" que no alcanza su base no está sano, y quien mire el panel merece enterarse.
+ */
+app.MapGet("/health", async (ApplicationDbContext db, CancellationToken ct) =>
+    await db.Database.CanConnectAsync(ct)
+        ? Results.Ok(new { status = "ok" })
+        : Results.Json(new { status = "sin base de datos" }, statusCode: StatusCodes.Status503ServiceUnavailable))
+   .AllowAnonymous()
+   .ExcludeFromDescription();
 
 app.MapControllers();
 
