@@ -1,0 +1,5 @@
+- [Avisos por Telegram al terminar una fase](telegram-phase-notifications.md) — cómo y cuándo avisar.
+- [Sistema de diseño de Penuel](penuel-design-system.md) — papel hueso, tinta, brasa y cifras en serif; el estándar es Awwwards.
+- [Pendientes del backend de Penuel](penuel-backend-pendientes.md) — los dos GET que faltan para que la administración salga del modo demo.
+- [Modo oscuro de Penuel](penuel-modo-oscuro.md) — paleta medida, no invertida; los cuatro tokens `on-*`.
+- [Grupos Familiares de Penuel](penuel-grupos-familiares.md) — el tercer patrón de autorización y los dos índices contrarios.
