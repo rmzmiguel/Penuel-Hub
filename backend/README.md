@@ -181,6 +181,24 @@ un grupo por el mero hecho de ser esa casa.
 Añadirle `family_group_id` a ese índice "para que quede como los demás" borraría la regla en
 silencio.
 
+## Restablecer una contraseña
+
+La aplicación no manda correos, así que **no hay recuperación de contraseña**. Lo normal es
+que el Pastor cree una cuenta nueva desde Personas, donde elige la clave y la app se la
+muestra para que pueda dictarla. Esta herramienta cubre el caso que ese camino no alcanza:
+que la cuenta perdida sea la del propio Pastor.
+
+```bash
+cd backend
+dotnet run --project Penuel.Tools -- correo@ejemplo.mx [otro@ejemplo.mx ...]
+```
+
+Genera la contraseña él mismo —no la pide por teclado, que es como acaban siendo débiles—,
+la muestra UNA vez y cierra las sesiones vivas de esa cuenta. Usa el mismo `BCryptPasswordHasher`
+que la API: generar el hash por fuera sería la forma más fácil de que un día dejen de coincidir.
+
+Toma la conexión del mismo almacén de user-secrets que `Penuel.WebApi`.
+
 ## Notas de seguridad
 
 - **Revocación inmediata.** Cada petición revalida contra la base que la cuenta siga activa,
