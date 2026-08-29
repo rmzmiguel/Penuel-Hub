@@ -87,10 +87,21 @@ if (!string.IsNullOrWhiteSpace(port))
 // todo sea mismo origen— no hay nada abierto de más.
 var frontendUrl = builder.Configuration["FRONTEND_URL"];
 
-if (!string.IsNullOrWhiteSpace(frontendUrl))
+// La barra final se recorta. `WithOrigins` compara EXACTAMENTE contra la cabecera
+// Origin, que nunca la lleva: pegar la URL del panel de Vercel —que sí la muestra—
+// hacía que el navegador se topara con una preflight sin `Allow-Origin` y con un
+// mensaje que no menciona la barra por ningún lado. Es el error de configuración más
+// fácil de cometer y el más difícil de ver.
+var allowedOrigins = (frontendUrl ?? string.Empty)
+    .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+    .Select(origin => origin.TrimEnd('/'))
+    .Where(origin => origin.Length > 0)
+    .ToArray();
+
+if (allowedOrigins.Length > 0)
 {
     builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy
-        .WithOrigins(frontendUrl.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+        .WithOrigins(allowedOrigins)
         .AllowAnyHeader()
         .AllowAnyMethod()));
 }
@@ -113,6 +124,14 @@ if (app.Environment.IsDevelopment())
 // El TLS lo termina el proxy de la plataforma, que reenvía HTTP plano. Sin esto la
 // aplicación se cree en texto claro y UseHttpsRedirection intentaría redirigir una
 // petición que YA venía cifrada; con la cabecera, ve el esquema original y no hace nada.
+// Se registra al arrancar qué orígenes quedaron admitidos. Un fallo de CORS se ve
+// desde el navegador como "falta la cabecera" y desde el servidor como un 204 normal:
+// sin esta línea, averiguar si la variable llegó bien exige adivinar.
+app.Logger.LogInformation(
+    "CORS: {Count} origen(es) admitido(s){Origins}",
+    allowedOrigins.Length,
+    allowedOrigins.Length == 0 ? " — FRONTEND_URL vacía" : " → " + string.Join(", ", allowedOrigins));
+
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,

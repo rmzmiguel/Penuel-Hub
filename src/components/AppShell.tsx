@@ -38,7 +38,7 @@ function useNav(): NavItem[] {
 
     if (perms.canAdminister) items.push({ to: '/personas', label: 'Personas', short: 'Personas', icon: 'group' })
     if (perms.canCaptureSundaySchool)
-      items.push({ to: '/escuela-dominical', label: 'Escuela Dominical', short: 'Escuela', icon: 'book' })
+      items.push({ to: '/escuela-dominical', label: 'Escuela Dominical', short: 'Dominical', icon: 'book' })
     if (perms.canCaptureServices) items.push({ to: '/culto', label: 'Reporte de culto', short: 'Culto', icon: 'coins' })
     if (perms.canSeeHistory) items.push({ to: '/historial', label: 'Historial', short: 'Historial', icon: 'list' })
 
