@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using Penuel.Application;
@@ -71,6 +72,16 @@ builder.Services.AddSwaggerGen(options =>
     options.AddSecurityRequirement(new OpenApiSecurityRequirement { [scheme] = Array.Empty<string>() });
 });
 
+// Render —y cualquier PaaS— asigna el puerto por la variable PORT y espera que el
+// proceso escuche ahí. ASP.NET no la lee solo, así que se traduce aquí en vez de
+// pedirle a quien despliega que recuerde poner ASPNETCORE_URLS a mano.
+var port = Environment.GetEnvironmentVariable("PORT");
+
+if (!string.IsNullOrWhiteSpace(port))
+{
+    builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+}
+
 // CORS: el origen sale EXCLUSIVAMENTE de FRONTEND_URL. Sin esa variable no se
 // registra ninguna política, así que en local —donde el proxy de Vite hace que
 // todo sea mismo origen— no hay nada abierto de más.
@@ -98,6 +109,17 @@ if (app.Environment.IsDevelopment())
         options.DocumentTitle = "Penuel API";
     });
 }
+
+// El TLS lo termina el proxy de la plataforma, que reenvía HTTP plano. Sin esto la
+// aplicación se cree en texto claro y UseHttpsRedirection intentaría redirigir una
+// petición que YA venía cifrada; con la cabecera, ve el esquema original y no hace nada.
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
+    // El proxy es de la plataforma y su dirección no se conoce de antemano.
+    KnownNetworks = { },
+    KnownProxies = { }
+});
 
 app.UseHttpsRedirection();
 

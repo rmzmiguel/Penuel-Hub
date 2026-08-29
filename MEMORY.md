@@ -97,6 +97,12 @@ probados y desplegados contra Supabase**. 155 tests.
 
 Pendiente: pruebas de despliegue en Render (backend) y Vercel (frontend).
 
+**Render no tiene entorno nativo de .NET**, así que el backend va por Docker. El
+`backend/Dockerfile` está probado en local corriendo como lo hará Render —con `PORT`
+inyectado— y haciendo login real contra Supabase. En Render: *New → Web Service*,
+**Root Directory `backend`**, runtime **Docker**, plan Free. Con el Root Directory
+puesto, el `Dockerfile` se detecta solo y el frontend de la raíz se ignora.
+
 ## Variables de entorno
 
 Backend (Render). En local viven en `dotnet user-secrets`; en producción, como variables.
@@ -108,7 +114,7 @@ El doble guion bajo es la convención de .NET para anidar (`ConnectionStrings:Pe
 | `Jwt__SecretKey` | Mínimo 32 bytes o la aplicación no arranca. |
 | `Jwt__Issuer`, `Jwt__Audience` | Solo si se cambian los de `appsettings.json`. |
 | `FRONTEND_URL` | Origen exacto de Vercel, con esquema y sin barra final. Admite varios separados por coma. Sin ella no se registra ninguna política de CORS. |
-| `ASPNETCORE_URLS` | `http://0.0.0.0:$PORT` — Render inyecta `PORT`. |
+| — | El puerto NO se configura: `Program.cs` lee `PORT`, que Render inyecta, y escucha ahí. |
 
 Frontend (Vercel):
 
