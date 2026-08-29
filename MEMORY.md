@@ -99,6 +99,22 @@ Pendiente: pruebas de despliegue en Render (backend) y Vercel (frontend).
 
 ## Variables de entorno
 
-- Backend: `FRONTEND_URL` (origen permitido por CORS; sin ella no se registra política),
-  `ConnectionStrings__Database`, `Jwt__SecretKey` (≥32 bytes).
-- Frontend: `VITE_API_URL` (vacía en local; el proxy de Vite sirve `/api` desde el mismo origen).
+Backend (Render). En local viven en `dotnet user-secrets`; en producción, como variables.
+El doble guion bajo es la convención de .NET para anidar (`ConnectionStrings:Penuel`).
+
+| Variable | Qué es |
+|---|---|
+| `ConnectionStrings__Penuel` | Cadena de Postgres. Usar el **Session pooler** de Supabase, no la conexión directa. |
+| `Jwt__SecretKey` | Mínimo 32 bytes o la aplicación no arranca. |
+| `Jwt__Issuer`, `Jwt__Audience` | Solo si se cambian los de `appsettings.json`. |
+| `FRONTEND_URL` | Origen exacto de Vercel, con esquema y sin barra final. Admite varios separados por coma. Sin ella no se registra ninguna política de CORS. |
+| `ASPNETCORE_URLS` | `http://0.0.0.0:$PORT` — Render inyecta `PORT`. |
+
+Frontend (Vercel):
+
+| Variable | Qué es |
+|---|---|
+| `VITE_API_URL` | URL del backend en Render, sin barra final. Vacía en local: el proxy de Vite sirve `/api` desde el mismo origen. |
+
+Los dos valores secretos están en la máquina; se leen con:
+`cd backend/Penuel.WebApi && dotnet user-secrets list`
